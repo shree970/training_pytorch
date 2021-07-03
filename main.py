@@ -17,7 +17,7 @@ def trainer(model, epochs, device, train_loader, test_loader, optimizer, criteri
         scheduler = ReduceLROnPlateau(optimizer, factor=0.2, patience=3, verbose=True, mode="max")
     for epoch in range(1, epochs + 1):
         print(f"Epoch {epoch}:")
-        train(model, device, train_loader, optimizer, epochs, train_accuracy, train_losses, l1_factor, criterion, lrs)
+        train(model, device, train_loader, optimizer, train_accuracy, train_losses, l1_factor, criterion, lrs)
         test(model, device, test_loader, test_accuracy, test_losses, criterion)
 
         if use_scheduler:
