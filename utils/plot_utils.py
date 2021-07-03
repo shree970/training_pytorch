@@ -3,6 +3,8 @@ import numpy as np
 import seaborn as sns
 import torch
 
+from utils import helper
+
 
 def show_batch(data_loader, labels):
     """
@@ -68,13 +70,12 @@ def plot_metrics(exp_metrics):
 
 def misclassified_images(model, test_loader, device):
     """
-    Visualize misclassified images.
+    Get misclassified images.
     """
-    class_names = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
-
     wrong_images = []
     wrong_label = []
     correct_label = []
+    model.eval()
     with torch.no_grad():
         for data, target in test_loader:
             data, target = data.to(device), target.to(device)
@@ -89,18 +90,28 @@ def misclassified_images(model, test_loader, device):
             wrong_predictions = list(zip(torch.cat(wrong_images), torch.cat(wrong_label), torch.cat(correct_label)))
         print(f"Total wrong predictions are {len(wrong_predictions)}")
 
-        fig = plt.figure(figsize=(10, 12))
-        fig.tight_layout()
+        plot_misclassified_images(wrong_predictions)
 
-        for i, (img, pred, correct) in enumerate(wrong_predictions[:10]):
-            img, pred, target = img.cpu().numpy(), pred.cpu(), correct.cpu()
+    return wrong_predictions
 
-            img = np.transpose(img, (1, 2, 0)) / 2 + 0.5
-            ax = fig.add_subplot(5, 5, i + 1)
-            ax.axis("off")
-            ax.set_title(
-                f"\nactual : {class_names[target.item()]}\npredicted : {class_names[pred.item()]}", fontsize=10
-            )
-            ax.imshow(img)
 
-        plt.show()
+def plot_misclassified_images(wrong_predictions):
+    """
+    Plot the misclassified images.
+    """
+    class_names = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
+    fig = plt.figure(figsize=(10, 12))
+    fig.tight_layout()
+    mean, std = helper.calculate_mean_std("CIFAR10")
+    for i, (img, pred, correct) in enumerate(wrong_predictions[:20]):
+        img, pred, target = img.cpu().numpy().astype(dtype=np.float32), pred.cpu(), correct.cpu()
+        for j in range(img.shape[0]):
+            img[j] = (img[j] * std[j]) + mean[j]
+
+        img = np.transpose(img, (1, 2, 0))
+        ax = fig.add_subplot(5, 5, i + 1)
+        ax.axis("off")
+        ax.set_title(f"\nactual : {class_names[target.item()]}\npredicted : {class_names[pred.item()]}", fontsize=10)
+        ax.imshow(img)
+
+    plt.show()

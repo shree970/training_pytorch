@@ -9,6 +9,9 @@ def apply_transforms(mean, std):
     """
     train_transforms = A.Compose(
         [
+            A.Sequential([
+                A.PadIfNeeded(min_height=40, min_width=40)
+            ]),
             A.Rotate(limit=5, p=0.2),
             A.CoarseDropout(
                 max_holes=1,
