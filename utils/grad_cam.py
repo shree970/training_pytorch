@@ -45,7 +45,6 @@ class GradCAM:
 
     def _encode_one_hot(self, ids):
         one_hot = torch.zeros_like(self.nll).to(self.device)
-        print(one_hot.shape)
         one_hot.scatter_(1, ids, 1.0)
         return one_hot
 

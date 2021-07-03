@@ -82,7 +82,7 @@ def misclassified_images(model, test_loader, device):
             output = model(data)
             pred = output.argmax(dim=1, keepdim=True).squeeze()  # get the index of the max log-probability
 
-            wrong_pred = pred.eq(target.view_as(pred)) is False
+            wrong_pred = pred.eq(target.view_as(pred)) == False
             wrong_images.append(data[wrong_pred])
             wrong_label.append(pred[wrong_pred])
             correct_label.append(target.view_as(pred)[wrong_pred])
