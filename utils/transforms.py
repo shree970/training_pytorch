@@ -1,5 +1,4 @@
 import albumentations as A
-from albumentations.augmentations.transforms import HorizontalFlip
 import numpy as np
 from albumentations.pytorch.transforms import ToTensorV2
 

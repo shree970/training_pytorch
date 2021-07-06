@@ -1,7 +1,7 @@
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-from utils.train import train
 from utils.test import test
+from utils.train import train
 
 
 def trainer(model, epochs, device, train_loader, test_loader, optimizer, criterion, l1_factor, use_scheduler=True):
