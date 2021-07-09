@@ -19,6 +19,7 @@ def train(
     lambda_l1,
     criterion,
     lrs,
+    scheduler,
     grad_clip=None,
 ):
     """
@@ -56,7 +57,13 @@ def train(
             nn.utils.clip_grad_value_(model.parameters(), grad_clip)
 
         optimizer.step()
+
+        if scheduler:
+            scheduler.step()
+        
         lrs.append(get_lr(optimizer))
+
+
 
         # Update pbar-tqdm
 
